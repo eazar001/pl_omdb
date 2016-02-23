@@ -22,7 +22,9 @@ omdb_dict(Dict, [Title,Year,Plot]) :-
   omdb_api(Template),
   format(string(Request), Template, Params),
   setup_call_cleanup(
-    http_open(Request, Stream, [timeout(20)]),
+    (  http_open(Request, Stream, [timeout(20)]),
+       set_stream(Stream, encoding(utf8))
+    ),
     json_read_dict(Stream, Dict),
     close(Stream)
   ).
