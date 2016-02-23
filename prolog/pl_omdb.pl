@@ -1,4 +1,4 @@
-:- module(omdb, []).
+:- module(pl_omdb, []).
 
 :- use_module(library(http/http_open)).
 :- use_module(library(http/json)).
@@ -37,6 +37,6 @@ omdb_key(error{'Error':"Movie not found!",'Response':"False"}, _, _) :-
   throw(movie_not_found).
 
 omdb_key(Dict, KeyType, Value) :-
+  when(ground(KeyType), must_be(omdb_key, KeyType)),
   omdb_key(KeyType, Key),
-  must_be(omdb_key, KeyType),
   Value = Dict.Key.
