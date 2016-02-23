@@ -3,7 +3,6 @@
 :- use_module(library(http/http_open)).
 :- use_module(library(http/json)).
 :- use_module(library(http/http_json)).
-:- use_module(library(typedef)).
 :- use_module(library(yall)).
 :- use_module(omdb_types).
 
