@@ -2,8 +2,6 @@
 
 :- use_module(library(typedef)).
 
-:- type omdb_param == string.
-
 :- type searchtype ---> movie ; series ; episode.
 
 :- type omdb_key --->
