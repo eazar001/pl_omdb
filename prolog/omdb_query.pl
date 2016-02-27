@@ -3,6 +3,7 @@
       ,search_query/2 ]).
 
 :- use_module(library(dcg/basics)).
+:- use_module(library(yall)).
 
 
 retrieval_option_set(
@@ -41,17 +42,17 @@ search_query(Args, Template) :-
 
 
 pretreat_params(SetType, Params, Treated) :-
-  option_set(SetType, Set),
+  option_set(SetType, Set, OptionType),
   union(Params, Set, Union),
-  maplist([X]>>ignore(X=(_="")), Union),
-  maplist([X=Y,X=S]>>( uri_encoded(fragment, Y, E), atom_string(E, S) ),
-    Union, Treated).
+  maplist([K=V]>>( must_be(OptionType, K), ignore(V="") ), Union),
+  maplist([X=Y,X=S]>>
+    ( uri_encoded(fragment, Y, E), atom_string(E, S) ), Union, Treated).
 
 
-option_set(retrieval, Set) :-
+option_set(retrieval, Set, retrieval_option) :-
   retrieval_option_set(Set).
 
-option_set(search, Set) :-
+option_set(search, Set, search_option) :-
   search_option_set(Set).
 
 
