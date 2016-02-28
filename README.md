@@ -26,7 +26,7 @@ Examples of Usage
 
 % Fetch the dictionary object for search results pertaining to the title "The Matrix".
 ?- omdb_search_dict(Dict, [title="The Matrix"]).
-```.
+
 
 The `Options list` is a list of valid parameters to pass to the OMDB API. All parameters are
 essentially key values that are of the type atom (described below). All of these keys correspond
