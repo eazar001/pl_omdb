@@ -1,6 +1,7 @@
 :- module(pl_omdb,
      [ omdb_fetch/2
       ,omdb_search/2
+      ,omdb_search_results/3
       ,omdb_fetch_dict/2
       ,omdb_search_dict/2 ]).
 
@@ -22,6 +23,14 @@ omdb_fetch(Key=Value, Options) :-
 omdb_search(Key=Value, Options) :-
   omdb_call(search, Dict, Options),
   Value = Dict.Key.
+
+omdb_search_results(Key=Value, Options, NumResults) :-
+  omdb_search_dict(Dict, Options),
+  NumResults = Dict.'totalResults',
+  SearchResults = Dict.'Search',
+  member(OneResult, SearchResults),
+  Value = OneResult.Key.
+
 
 omdb_fetch_dict(Dict, Options) :-
   omdb_call(retrieval, Dict, Options).
