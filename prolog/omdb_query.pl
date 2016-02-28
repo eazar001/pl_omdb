@@ -6,6 +6,15 @@
 :- use_module(library(yall)).
 
 
+/** <module> OMDB URL query construction
+This module is responsible for taking user supplied API parameters and
+constructing the URL responsible for the actual requests to the server.
+
+@author Ebrahim Azarisooreh
+@license MIT
+*/
+
+
 retrieval_option_set(
   [ id=_
    ,title=_
