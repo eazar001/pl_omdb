@@ -1,6 +1,6 @@
 pl-omdb
 =======
-This is A SWI-Prolog interface to the OMDB (Open Movie Database) API (http://www.omdbapi.com).
+This is A SWI-Prolog interface to the OMDB (Open Movie Database) API http://www.omdbapi.com
 
 Examples of Usage
 =================
@@ -15,7 +15,7 @@ Examples of Usage
 %  and respective values ... including results specific to Rotten Tomatoes.
 ?- omdb_fetch(Key=Value, [title="Casino Royale",year="2006",tomatoes="true"]).
 
-% Find Return list of search results along with number of results.
+% Return list of search results along with number of results.
 ?- omdb_search(Key=Value, [title="The Matrix"]).
 
 % Iterate through all the search results while also unifying with the number of results found.
@@ -26,9 +26,9 @@ Examples of Usage
 
 % Fetch the dictionary object for search results pertaining to the title "The Matrix".
 ?- omdb_search_dict(Dict, [title="The Matrix"]).
+```
 
-
-The `Options list` is a list of valid parameters to pass to the OMDB API. All parameters are
+The `Options` list is a list of valid parameters to pass to the OMDB API. All parameters are
 essentially key values that are of the type atom (described below). All of these keys correspond
 to a value (all represented as string types).
 
@@ -40,7 +40,7 @@ Here are some valid options for fetches/retrievals:
 * plot
 * tomatoes
 * callback
-* version.
+* version
 
 ... And for searches:
 * title
@@ -48,8 +48,7 @@ Here are some valid options for fetches/retrievals:
 * year
 * page
 * callback
-* version.
-```
+* version
 
 For more information regarding the parameters visit the official website link posted at the top of
 this page.
