@@ -1,9 +1,8 @@
 name(pl_omdb).
 title('API interface to OMDB (Open Movie Database)').
-version('0.1.1').
+version('0.1.2').
 author('Ebrahim Azarisooreh', 'ebrahim.azarisooreh@gmail.com').
 home('https://github.com/eazar001/pl_omdb').
 keywords([omdb,movie,movies,films,film,television]).
 requires(typedef).
-requires(tap).
-download('https://github.com/eazar001/pl_omdb/archive/v0.1.1.zip').
+download('https://github.com/eazar001/pl_omdb/archive/v0.1.2.zip').
