@@ -1,4 +1,4 @@
-:- use_module(library(omdb)).
+:- use_module(library(pl_omdb)).
 :- use_module(library(tap)).
 
 fetch_one_value :-
@@ -25,4 +25,4 @@ search_title :-
       [title="The Road to Casino Royale"],
        _NumResults),
     1
-    ).
+  ).
