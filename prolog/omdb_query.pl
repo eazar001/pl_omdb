@@ -17,7 +17,7 @@ constructing the URL responsible for the actual requests to the server.
 retrieval_option_set(
   [ id=_
    ,title=_
-   ,type=_
+   ,'type'=_
    ,year=_
    ,plot=_
    ,tomatoes=_
@@ -26,7 +26,7 @@ retrieval_option_set(
 
 search_option_set(
   [ title=_
-   ,type=_
+   ,'type'=_
    ,year=_
    ,page=_
    ,callback=_
@@ -86,8 +86,8 @@ omdb_retrieval([t=Value|Rest]) -->
     [title=Value],
     omdb_retrieval(Rest).
 
-omdb_retrieval([type=Value|Rest]) -->
-    [type=Value],
+omdb_retrieval(['type'=Value|Rest]) -->
+    ['type'=Value],
     omdb_retrieval(Rest).
 
 omdb_retrieval([y=Value|Rest]) -->
@@ -121,8 +121,8 @@ omdb_search([s=Value|Rest]) -->
     [title=Value],
     omdb_search(Rest).
 
-omdb_search([type=Value|Rest]) -->
-    [type=Value],
+omdb_search(['type'=Value|Rest]) -->
+    ['type'=Value],
     omdb_search(Rest).
 
 omdb_search([y=Value|Rest]) -->
