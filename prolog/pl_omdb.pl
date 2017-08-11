@@ -1,9 +1,9 @@
 :- module(pl_omdb, [
-	 omdb_fetch/2,
-	 omdb_search/2,
+	 omdb_fetch/3,
+	 omdb_search/3,
 	 omdb_search_results/3,
-	 omdb_fetch_dict/2,
-	 omdb_search_dict/2
+	 omdb_fetch_dict/3,
+	 omdb_search_dict/3
 ]).
 
 :- use_module(library(http/http_open)).
@@ -35,8 +35,8 @@ omdb_poster_api("http://img.omdbapi.com/?~s&apikey=~s&").
 %  result from the OMDB API that corresponds to a set of Key=Value pairs
 %  represented by KVPair.
 
-omdb_fetch(Key=Value, Options) :-
-	omdb_call(retrieval, Dict, Options),
+omdb_fetch(ApiKey, Key=Value, Options) :-
+	omdb_call(retrieval, ApiKey, Dict, Options),
 	Value = Dict.Key.
 
 
@@ -47,8 +47,8 @@ omdb_fetch(Key=Value, Options) :-
 %  dictionaries which each represents a search result. Both the list of search
 %  results and the number of results are part of KVPair (Key=Value).
 
-omdb_search(Key=Value, Options) :-
-	omdb_call(search, Dict, Options),
+omdb_search(ApiKey, Key=Value, Options) :-
+	omdb_call(search, ApiKey, Dict, Options),
 	Value = Dict.Key.
 
 
@@ -71,15 +71,15 @@ omdb_search_results(Key=Value, Options, NumResults) :-
 %  Like omdb_fetch/2, except the Dict unifies directly with the dictionary object
 %  rather than backtracking over individual Key=Value pairs.
 
-omdb_fetch_dict(Dict, Options) :-
-	omdb_call(retrieval, Dict, Options).
+omdb_fetch_dict(ApiKey, Dict, Options) :-
+	omdb_call(retrieval, ApiKey, Dict, Options).
 
 
 %% omdb_search_dict(-Dict, +Options) is det.
 %
 %  Like omdb_fetch_dict/2 but for search queries.
-omdb_search_dict(Dict, Options) :-
-	omdb_call(search, Dict, Options).
+omdb_search_dict(ApiKey, Dict, Options) :-
+	omdb_call(search, ApiKey, Dict, Options).
 
 
 %--------------------------------------------------------------------------------%
@@ -87,14 +87,15 @@ omdb_search_dict(Dict, Options) :-
 %--------------------------------------------------------------------------------%
 
 
-omdb_call(Call, Dict, Options) :-
+omdb_call(Call, ApiKey, Dict, Options) :-
 	(	Call = retrieval,
 		retrieval_query(Options, Template)
 	;	Call = search,
 		search_query(Options, Template)
 	),
 	omdb_api(API),
-	format(string(Request), API, [Template]),
+	format(string(Request0), API, [Template]),
+	format(string(Request), "~s&apikey=~s", [Request0, ApiKey]),
 	omdb_connect(Request, Dict).
 
 
