@@ -6,9 +6,9 @@
 	 omdb_search_dict/3
 ]).
 
+:- use_module(library(lists), [member/2]).
 :- use_module(library(http/http_open)).
 :- use_module(library(http/json)).
-:- use_module(library(uri)).
 :- use_module(omdb_types).
 :- use_module(omdb_query).
 
@@ -105,6 +105,8 @@ omdb_connect(Request, Dict) :-
 	).
 
 :- begin_tests(pl_omdb).
+
+:- use_module(library(aggregate), [aggregate_all/3]).
 
 test(fetch_one_value) :-
 	aggregate_all(

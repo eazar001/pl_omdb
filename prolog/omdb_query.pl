@@ -3,7 +3,10 @@
 	search_query/2
 ]).
 
-:- use_module(library(dcg/basics)).
+:- use_module(library(lists), [member/2, union/3]).
+:- use_module(library(apply), [maplist/2, maplist/3]).
+:- use_module(library(error), [must_be/2]).
+:- use_module(library(uri), [uri_encoded/3]).
 
 
 /** <module> OMDB URL query construction
