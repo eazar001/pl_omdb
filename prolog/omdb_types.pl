@@ -4,19 +4,19 @@
 
 
 :- type retrieval_option --->
-      id
-     ;title
-     ;'type'
-     ;year
-     ;plot
-     ;tomatoes
-     ;callback
-     ;version.
+	id
+	;title
+	;'type'
+	;year
+	;plot
+	;tomatoes
+	;callback
+	;version.
 
 :- type search_option --->
-      title
-     ;'type'
-     ;year
-     ;page
-     ;callback
-     ;version.
+	title
+	;'type'
+	;year
+	;page
+	;callback
+	;version.
