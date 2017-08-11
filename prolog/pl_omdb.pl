@@ -1,7 +1,7 @@
 :- module(pl_omdb, [
 	 omdb_fetch/3,
 	 omdb_search/3,
-	 omdb_search_results/3,
+	 omdb_search_results/4,
 	 omdb_fetch_dict/3,
 	 omdb_search_dict/3
 ]).
@@ -29,7 +29,7 @@ omdb_api("http://www.omdbapi.com/?~s&r=json").
 omdb_poster_api("http://img.omdbapi.com/?~s&apikey=~s&").
 
 
-%% omdb_fetch(?KVPair, +Options) is nondet.
+%% omdb_fetch(+ApiKey, ?KVPair, +Options) is nondet.
 %
 %  True if Options is a supplied list of API parameters that fetches a valid
 %  result from the OMDB API that corresponds to a set of Key=Value pairs
@@ -40,7 +40,7 @@ omdb_fetch(ApiKey, Key=Value, Options) :-
 	Value = Dict.Key.
 
 
-%% omdb_search(?KVPair, +Options) is nondet.
+%% omdb_search(+ApiKey, ?KVPair, +Options) is nondet.
 %
 %  True if Options is a supplied list of API paremters that fetches a valid
 %  OMDB object which contains the number of search results and a list of OMDB
@@ -52,32 +52,32 @@ omdb_search(ApiKey, Key=Value, Options) :-
 	Value = Dict.Key.
 
 
-%% omdb_search_results(?KVPair, +Options, ?NumResults) is nondet.
+%% omdb_search_results(+ApiKey, ?KVPair, +Options, ?NumResults) is nondet.
 %
-%  Like omdb_search/2, except all the Key=Value pairs are iterated through
+%  Like omdb_search/3, except all the Key=Value pairs are iterated through
 %  automatically without needed to do any further unwrapping. NumResults is
 %  the number of search results found by the search query.
 
-omdb_search_results(Key=Value, Options, NumResults) :-
-	omdb_search_dict(Dict, Options),
+omdb_search_results(ApiKey, Key=Value, Options, NumResults) :-
+	omdb_search_dict(ApiKey, Dict, Options),
 	NumResults = Dict.'totalResults',
 	SearchResults = Dict.'Search',
 	member(OneResult, SearchResults),
 	Value = OneResult.Key.
 
 
-%% omdb_fetch_dict(-Dict, +Options) is det.
+%% omdb_fetch_dict(+ApiKey, -Dict, +Options) is det.
 %
-%  Like omdb_fetch/2, except the Dict unifies directly with the dictionary object
+%  Like omdb_fetch/3, except the Dict unifies directly with the dictionary object
 %  rather than backtracking over individual Key=Value pairs.
 
 omdb_fetch_dict(ApiKey, Dict, Options) :-
 	omdb_call(retrieval, ApiKey, Dict, Options).
 
 
-%% omdb_search_dict(-Dict, +Options) is det.
+%% omdb_search_dict(+ApiKey, -Dict, +Options) is det.
 %
-%  Like omdb_fetch_dict/2 but for search queries.
+%  Like omdb_fetch_dict/3 but for search queries.
 omdb_search_dict(ApiKey, Dict, Options) :-
 	omdb_call(search, ApiKey, Dict, Options).
 
