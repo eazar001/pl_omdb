@@ -29,7 +29,7 @@ omdb_api("http://www.omdbapi.com/?~s&r=json").
 omdb_poster_api("http://img.omdbapi.com/?~s&apikey=~s&").
 
 
-%% omdb_fetch(+ApiKey, ?KVPair, +Options) is nondet.
+%! omdb_fetch(+ApiKey, ?KVPair, +Options) is nondet.
 %
 %  True if Options is a supplied list of API parameters that fetches a valid
 %  result from the OMDB API that corresponds to a set of Key=Value pairs
@@ -38,7 +38,7 @@ omdb_fetch(ApiKey, Key=Value, Options) :-
 	omdb_call(retrieval, ApiKey, Dict, Options),
 	Value = Dict.Key.
 
-%% omdb_search(+ApiKey, ?KVPair, +Options) is nondet.
+%! omdb_search(+ApiKey, ?KVPair, +Options) is nondet.
 %
 %  True if Options is a supplied list of API paremters that fetches a valid
 %  OMDB object which contains the number of search results and a list of OMDB
@@ -48,7 +48,7 @@ omdb_search(ApiKey, Key=Value, Options) :-
 	omdb_call(search, ApiKey, Dict, Options),
 	Value = Dict.Key.
 
-%% omdb_search_results(+ApiKey, ?KVPair, +Options, ?NumResults) is nondet.
+%! omdb_search_results(+ApiKey, ?KVPair, +Options, ?NumResults) is nondet.
 %
 %  Like omdb_search/3, except all the Key=Value pairs are iterated through
 %  automatically without needed to do any further unwrapping. NumResults is
@@ -60,14 +60,14 @@ omdb_search_results(ApiKey, Key=Value, Options, NumResults) :-
 	member(OneResult, SearchResults),
 	Value = OneResult.Key.
 
-%% omdb_fetch_dict(+ApiKey, -Dict, +Options) is det.
+%! omdb_fetch_dict(+ApiKey, -Dict, +Options) is det.
 %
 %  Like omdb_fetch/3, except the Dict unifies directly with the dictionary object
 %  rather than backtracking over individual Key=Value pairs.
 omdb_fetch_dict(ApiKey, Dict, Options) :-
 	omdb_call(retrieval, ApiKey, Dict, Options).
 
-%% omdb_search_dict(+ApiKey, -Dict, +Options) is det.
+%! omdb_search_dict(+ApiKey, -Dict, +Options) is det.
 %
 %  Like omdb_fetch_dict/3 but for search queries.
 omdb_search_dict(ApiKey, Dict, Options) :-
