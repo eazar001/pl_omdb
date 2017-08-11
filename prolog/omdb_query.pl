@@ -19,23 +19,25 @@ constructing the URL responsible for the actual requests to the server.
 
 
 retrieval_option_set([
-	id=_
-	,title=_
-	,'type'=_
-	,year=_
-	,plot=_
-	,tomatoes=_
-	,callback=_
-	,version=_ ]).
+	id=_,
+	title=_,
+	'type'=_,
+	year=_,
+	plot=_,
+	tomatoes=_,
+	callback=_,
+	version=_
+]).
 
 search_option_set([
-	title=_
-	,'type'=_
-	,year=_
-	,page=_
-	,callback=_
-	,version=_
+	title=_,
+	'type'=_,
+	year=_,
+	page=_,
+	callback=_,
+	version=_
 ]).
+
 
 %--------------------------------------------------------------------------------%
 % Interface
