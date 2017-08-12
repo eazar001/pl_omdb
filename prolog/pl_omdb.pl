@@ -107,7 +107,8 @@ omdb_connect(Request, Dict) :-
 :- use_module(library(aggregate), [aggregate_all/3]).
 
 get_key(Key) :-
-	read_file_to_string('prolog/test_files/key.txt', Key, []).
+	read_file_to_string('test_files/key.txt', KeyLine, []),
+	atom_concat(Key, '\n', KeyLine).
 
 test(fetch_one_value) :-
 	get_key(Key),

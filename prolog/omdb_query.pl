@@ -7,6 +7,7 @@
 :- use_module(library(apply), [maplist/2, maplist/3]).
 :- use_module(library(error), [must_be/2]).
 :- use_module(library(uri), [uri_encoded/3]).
+:- use_module(library(dcg/basics)).
 
 
 /** <module> OMDB URL query construction
