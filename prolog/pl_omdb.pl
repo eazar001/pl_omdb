@@ -81,15 +81,13 @@ omdb_search_dict(ApiKey, Dict, Options) :-
 
 omdb_call(retrieval, ApiKey, Dict, Options) :-
 	retrieval_query(Options, Template),
-	build_request(ApiKey, Template, Request, Dict),
-	omdb_connect(Request, Dict).
+	make_connection(ApiKey, Template, Dict).
 
 omdb_call(search, ApiKey, Dict, Options) :-
 	search_query(Options, Template),
-	build_request(ApiKey, Template, Request, Dict),
-	omdb_connect(Request, Dict).
+	make_connection(ApiKey, Template, Dict).
 
-build_request(ApiKey, Template, Request, Dict) :-
+make_connection(ApiKey, Template, Dict) :-
 	omdb_api(API),
 	format(string(Request0), API, [Template]),
 	format(string(Request), "~s&apikey=~s", [Request0, ApiKey]),
