@@ -106,27 +106,42 @@ omdb_connect(Request, Dict) :-
 
 :- use_module(library(aggregate), [aggregate_all/3]).
 
+get_key(Key) :-
+	setup_call_cleanup(
+		open('test_files/key.txt', read, Stream),
+		read(Stream, Key),
+		close(Stream)
+	).
+
 test(fetch_one_value) :-
+	get_key(Key),
 	aggregate_all(
 		count,
-		omdb_fetch('Released'=_Value, [title="Casino Royale",year="2006"]),
+		omdb_fetch(Key, 'Released'=_Value, [title="Casino Royale",year="2006"]),
 		1
 	).
 
 test(throw_error) :-
-	catch(omdb_fetch('Released'=_Value, [title="Casino Royale",year="200346"]),
-	  Error,
-	  Error=error(
-	  existence_error(
-		key,
-		'Released',
-		_{'Error':"Movie not found!", 'Response':"False"}), _)
+	get_key(Key),
+	catch(
+		omdb_fetch(Key, 'Released'=_Value, [title="Casino Royale",year="200346"]),
+		Error,
+		Error=error(
+			existence_error(
+				key,
+				'Released',
+				_{'Error':"Movie not found!", 'Response':"False"}
+				),
+				_
+		)
 	).
 
 test(search_title) :-
+	get_key(Key),
 	aggregate_all(
 		count,
 		omdb_search_results(
+			Key,
 			'Title'=_Value,
 			[title="The Road to Casino Royale"],
 			_NumResults
