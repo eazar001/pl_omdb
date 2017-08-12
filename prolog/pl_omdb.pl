@@ -107,7 +107,12 @@ omdb_connect(Request, Dict) :-
 :- use_module(library(aggregate), [aggregate_all/3]).
 
 get_key(Key) :-
-	read_file_to_string('test_files/key.txt', KeyLine, []),
+	file_search_path(library, Path),
+	atomic(Path),
+	atom_concat(_, 'pl_omdb/prolog', Path0),
+	!,
+	atom_concat(Path0, '/test_files/key.txt', Path),
+	read_file_to_string(Path, KeyLine, []),
 	atom_concat(Key, '\n', KeyLine).
 
 test(fetch_one_value) :-
