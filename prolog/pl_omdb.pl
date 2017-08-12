@@ -107,11 +107,7 @@ omdb_connect(Request, Dict) :-
 :- use_module(library(aggregate), [aggregate_all/3]).
 
 get_key(Key) :-
-	setup_call_cleanup(
-		open('test_files/key.txt', read, Stream),
-		read(Stream, Key),
-		close(Stream)
-	).
+	read_file_to_string('prolog/test_files/key.txt', Key, []).
 
 test(fetch_one_value) :-
 	get_key(Key),
