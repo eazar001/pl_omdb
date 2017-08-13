@@ -106,17 +106,20 @@ omdb_connect(Request, Dict) :-
 
 :- use_module(library(aggregate), [aggregate_all/3]).
 
-get_key(Key) :-
+get_key :-
 	file_search_path(library, Path0),
 	atomic(Path0),
 	atom_concat(_, 'pl_omdb/prolog', Path0),
 	!,
 	atom_concat(Path0, '/test_files/key.txt', Path),
 	read_file_to_string(Path, KeyLine, []),
-	atom_concat(Key, '\n', KeyLine).
+	atom_concat(Key, '\n', KeyLine),
+	set_prolog_flag(omdb_api_key, Key).
+
+:- get_key.
 
 test(fetch_one_value) :-
-	get_key(Key),
+	current_prolog_flag(omdb_api_key, Key),
 	aggregate_all(
 		count,
 		omdb_fetch(Key, 'Released'=_Value, [title='Casino Royale',year='2006']),
@@ -124,7 +127,7 @@ test(fetch_one_value) :-
 	).
 
 test(throw_error) :-
-	get_key(Key),
+	current_prolog_flag(omdb_api_key, Key),
 	catch(
 		omdb_fetch(Key, 'Released'=_Value, [title='Casino Royale',year='200346']),
 		Error,
@@ -139,7 +142,7 @@ test(throw_error) :-
 	).
 
 test(search_title) :-
-	get_key(Key),
+	current_prolog_flag(omdbi_api_key, Key),
 	aggregate_all(
 		count,
 		omdb_search_results(
