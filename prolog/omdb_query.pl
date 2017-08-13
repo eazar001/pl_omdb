@@ -8,6 +8,7 @@
 :- use_module(library(error), [must_be/2]).
 :- use_module(library(uri), [uri_encoded/3]).
 :- use_module(library(dcg/basics)).
+:- use_module(library(typedef)).
 
 
 /** <module> OMDB URL query construction
@@ -18,6 +19,24 @@ constructing the URL responsible for the actual requests to the server.
 @license MIT
 */
 
+
+:- type retrieval_option --->
+	id
+	;title
+	;media_type
+	;year
+	;plot
+	;tomatoes
+	;callback
+	;version.
+
+:- type search_option --->
+	title
+	;media_type
+	;year
+	;page
+	;callback
+	;version.
 
 retrieval_option_set([
 	id=_,
@@ -50,12 +69,10 @@ retrieval_query(Args, Template) :-
 	phrase(omdb_retrieval(Query), Treated),
 	format(atom(Template), '~w&~w&~w&~w&~w&~w&~w&~w', Query).
 
-
 search_query(Args, Template) :-
 	pretreat_params(search, Args, Treated),
 	phrase(omdb_search(Query), Treated),
 	format(atom(Template), '~w&~w&~w&~w&~w&~w', Query).
-
 
 pretreat_params(SetType, Params, Treated) :-
 	option_set(SetType, Set, OptionType),
@@ -63,14 +80,12 @@ pretreat_params(SetType, Params, Treated) :-
 	maplist(set_default(OptionType), Union),
 	maplist(encode_atom, Union, Treated).
 
-
 set_default(OptionType, K=V) :-
 	must_be(OptionType, K),
 	ignore(V='').
 
 encode_atom(X=Y, X=E) :-
 	uri_encoded(fragment, Y, E).
-
 
 option_set(retrieval, Set, retrieval_option) :-
 	retrieval_option_set(Set).

@@ -9,7 +9,6 @@
 :- use_module(library(lists), [member/2]).
 :- use_module(library(http/http_open)).
 :- use_module(library(http/json)).
-:- use_module(omdb_types).
 :- use_module(omdb_query).
 
 :- create_prolog_flag(omdb_api_key, '', []).
