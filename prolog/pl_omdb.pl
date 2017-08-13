@@ -1,9 +1,14 @@
 :- module(pl_omdb, [
 	 omdb_fetch/3,
+	 omdb_fetch/2,
 	 omdb_search/3,
+	 omdb_search/2,
 	 omdb_search_results/4,
+	 omdb_search_results/3,
 	 omdb_fetch_dict/3,
-	 omdb_search_dict/3
+	 omdb_fetch_dict/2,
+	 omdb_search_dict/3,
+	 omdb_search_dict/2
 ]).
 
 :- use_module(library(lists), [member/2]).
@@ -73,6 +78,47 @@ omdb_fetch_dict(ApiKey, Dict, Options) :-
 omdb_search_dict(ApiKey, Dict, Options) :-
 	omdb_call(search, ApiKey, Dict, Options).
 
+%! omdb_fetch(?KVPair, +Options) is nondet.
+%
+%  As with omdb_fetch/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_fetch(Key=Value, Options) :-
+	omdb_call(retrieval, Dict, Options),
+	Value = Dict.Key.
+
+%! omdb_search(?KVPair, +Options) is nondet.
+%
+%  As with omdb_search/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_search(Key=Value, Options) :-
+	omdb_call(search, Dict, Options),
+	Value = Dict.Key.
+
+%! omdb_search_results(?KVPair, +Options, ?NumResults) is nondet.
+%
+%  As with omdb_search_results/4, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_search_results(Key=Value, Options, NumResults) :-
+	omdb_search_dict(Dict, Options),
+	NumResults = Dict.'totalResults',
+	SearchResults = Dict.'Search',
+	member(OneResult, SearchResults),
+	Value = OneResult.Key.
+
+%! omdb_fetch_dict(-Dict, +Options) is det.
+%
+%  As with omdb_fetch_dict/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_fetch_dict(Dict, Options) :-
+	omdb_call(retrieval, Dict, Options).
+
+%! omdb_search_dict(+ApiKey, -Dict, +Options) is det.
+%
+%  As with omdb_search_dict/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_search_dict(Dict, Options) :-
+	omdb_call(search, Dict, Options).
+
 
 %--------------------------------------------------------------------------------%
 % Internal Predicates
@@ -85,6 +131,16 @@ omdb_call(retrieval, ApiKey, Dict, Options) :-
 
 omdb_call(search, ApiKey, Dict, Options) :-
 	search_query(Options, Template),
+	make_connection(ApiKey, Template, Dict).
+
+omdb_call(retrieval, Dict, Options) :-
+	retrieval_query(Options, Template),
+	current_prolog_flag(omdb_api_key, ApiKey),
+	make_connection(ApiKey, Template, Dict).
+
+omdb_call(search, Dict, Options) :-
+	retrieval_query(Options, Template),
+	current_prolog_flag(omdb_api_key, ApiKey),
 	make_connection(ApiKey, Template, Dict).
 
 make_connection(ApiKey, Template, Dict) :-
