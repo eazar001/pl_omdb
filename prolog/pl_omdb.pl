@@ -12,6 +12,7 @@
 :- use_module(omdb_types).
 :- use_module(omdb_query).
 
+:- create_prolog_flag(omdb_api_key, '', []).
 
 /** <module> pl_omdb API
 This module implements a convenience layer over the OMDB API located at:
@@ -25,8 +26,8 @@ affiliated with the official API/website itself.
 */
 
 
-omdb_api("http://www.omdbapi.com/?~s&r=json").
-omdb_poster_api("http://img.omdbapi.com/?~s&apikey=~s&").
+omdb_api('http://www.omdbapi.com/?~a&r=json').
+omdb_poster_api('http://img.omdbapi.com/?~a&apikey=~a&').
 
 
 %! omdb_fetch(+ApiKey, ?KVPair, +Options) is nondet.
@@ -89,8 +90,8 @@ omdb_call(search, ApiKey, Dict, Options) :-
 
 make_connection(ApiKey, Template, Dict) :-
 	omdb_api(API),
-	format(string(Request0), API, [Template]),
-	format(string(Request), "~s&apikey=~s", [Request0, ApiKey]),
+	format(atom(Request0), API, [Template]),
+	format(atom(Request), '~a&apikey=~a', [Request0, ApiKey]),
 	omdb_connect(Request, Dict).
 
 omdb_connect(Request, Dict) :-
@@ -119,14 +120,14 @@ test(fetch_one_value) :-
 	get_key(Key),
 	aggregate_all(
 		count,
-		omdb_fetch(Key, 'Released'=_Value, [title="Casino Royale",year="2006"]),
+		omdb_fetch(Key, 'Released'=_Value, [title='Casino Royale',year='2006']),
 		1
 	).
 
 test(throw_error) :-
 	get_key(Key),
 	catch(
-		omdb_fetch(Key, 'Released'=_Value, [title="Casino Royale",year="200346"]),
+		omdb_fetch(Key, 'Released'=_Value, [title='Casino Royale',year='200346']),
 		Error,
 		Error=error(
 			existence_error(
@@ -145,7 +146,7 @@ test(search_title) :-
 		omdb_search_results(
 			Key,
 			'Title'=_Value,
-			[title="The Road to Casino Royale"],
+			[title='The Road to Casino Royale'],
 			_NumResults
 		),
 		1

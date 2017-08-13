@@ -6,7 +6,7 @@
 :- type retrieval_option --->
 	id
 	;title
-	;'type'
+	;media_type
 	;year
 	;plot
 	;tomatoes
@@ -15,7 +15,7 @@
 
 :- type search_option --->
 	title
-	;'type'
+	;media_type
 	;year
 	;page
 	;callback
