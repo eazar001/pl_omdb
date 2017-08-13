@@ -1,17 +1,22 @@
 :- module(pl_omdb, [
 	 omdb_fetch/3,
+	 omdb_fetch/2,
 	 omdb_search/3,
+	 omdb_search/2,
 	 omdb_search_results/4,
+	 omdb_search_results/3,
 	 omdb_fetch_dict/3,
-	 omdb_search_dict/3
+	 omdb_fetch_dict/2,
+	 omdb_search_dict/3,
+	 omdb_search_dict/2
 ]).
 
 :- use_module(library(lists), [member/2]).
 :- use_module(library(http/http_open)).
 :- use_module(library(http/json)).
-:- use_module(omdb_types).
 :- use_module(omdb_query).
 
+:- create_prolog_flag(omdb_api_key, '', [type(atom)]).
 
 /** <module> pl_omdb API
 This module implements a convenience layer over the OMDB API located at:
@@ -25,8 +30,8 @@ affiliated with the official API/website itself.
 */
 
 
-omdb_api("http://www.omdbapi.com/?~s&r=json").
-omdb_poster_api("http://img.omdbapi.com/?~s&apikey=~s&").
+omdb_api('http://www.omdbapi.com/?~a&r=json').
+omdb_poster_api('http://img.omdbapi.com/?~a&apikey=~a&').
 
 
 %! omdb_fetch(+ApiKey, ?KVPair, +Options) is nondet.
@@ -73,6 +78,47 @@ omdb_fetch_dict(ApiKey, Dict, Options) :-
 omdb_search_dict(ApiKey, Dict, Options) :-
 	omdb_call(search, ApiKey, Dict, Options).
 
+%! omdb_fetch(?KVPair, +Options) is nondet.
+%
+%  As with omdb_fetch/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_fetch(Key=Value, Options) :-
+	omdb_call(retrieval, Dict, Options),
+	Value = Dict.Key.
+
+%! omdb_search(?KVPair, +Options) is nondet.
+%
+%  As with omdb_search/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_search(Key=Value, Options) :-
+	omdb_call(search, Dict, Options),
+	Value = Dict.Key.
+
+%! omdb_search_results(?KVPair, +Options, ?NumResults) is nondet.
+%
+%  As with omdb_search_results/4, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_search_results(Key=Value, Options, NumResults) :-
+	omdb_search_dict(Dict, Options),
+	NumResults = Dict.'totalResults',
+	SearchResults = Dict.'Search',
+	member(OneResult, SearchResults),
+	Value = OneResult.Key.
+
+%! omdb_fetch_dict(-Dict, +Options) is det.
+%
+%  As with omdb_fetch_dict/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_fetch_dict(Dict, Options) :-
+	omdb_call(retrieval, Dict, Options).
+
+%! omdb_search_dict(+ApiKey, -Dict, +Options) is det.
+%
+%  As with omdb_search_dict/3, but using the user supplied prolog_flag `omdb_api_key`
+%  instead.
+omdb_search_dict(Dict, Options) :-
+	omdb_call(search, Dict, Options).
+
 
 %--------------------------------------------------------------------------------%
 % Internal Predicates
@@ -87,10 +133,20 @@ omdb_call(search, ApiKey, Dict, Options) :-
 	search_query(Options, Template),
 	make_connection(ApiKey, Template, Dict).
 
+omdb_call(retrieval, Dict, Options) :-
+	retrieval_query(Options, Template),
+	current_prolog_flag(omdb_api_key, ApiKey),
+	make_connection(ApiKey, Template, Dict).
+
+omdb_call(search, Dict, Options) :-
+	retrieval_query(Options, Template),
+	current_prolog_flag(omdb_api_key, ApiKey),
+	make_connection(ApiKey, Template, Dict).
+
 make_connection(ApiKey, Template, Dict) :-
 	omdb_api(API),
-	format(string(Request0), API, [Template]),
-	format(string(Request), "~s&apikey=~s", [Request0, ApiKey]),
+	format(atom(Request0), API, [Template]),
+	format(atom(Request), '~a&apikey=~a', [Request0, ApiKey]),
 	omdb_connect(Request, Dict).
 
 omdb_connect(Request, Dict) :-
@@ -106,27 +162,30 @@ omdb_connect(Request, Dict) :-
 
 :- use_module(library(aggregate), [aggregate_all/3]).
 
-get_key(Key) :-
+get_key :-
 	file_search_path(library, Path0),
 	atomic(Path0),
 	atom_concat(_, 'pl_omdb/prolog', Path0),
 	!,
 	atom_concat(Path0, '/test_files/key.txt', Path),
 	read_file_to_string(Path, KeyLine, []),
-	atom_concat(Key, '\n', KeyLine).
+	atom_concat(Key, '\n', KeyLine),
+	set_prolog_flag(omdb_api_key, Key).
+
+:- get_key.
 
 test(fetch_one_value) :-
-	get_key(Key),
+	current_prolog_flag(omdb_api_key, Key),
 	aggregate_all(
 		count,
-		omdb_fetch(Key, 'Released'=_Value, [title="Casino Royale",year="2006"]),
+		omdb_fetch(Key, 'Released'=_Value, [title='Casino Royale',year='2006']),
 		1
 	).
 
 test(throw_error) :-
-	get_key(Key),
+	current_prolog_flag(omdb_api_key, Key),
 	catch(
-		omdb_fetch(Key, 'Released'=_Value, [title="Casino Royale",year="200346"]),
+		omdb_fetch(Key, 'Released'=_Value, [title='Casino Royale',year='200346']),
 		Error,
 		Error=error(
 			existence_error(
@@ -139,13 +198,13 @@ test(throw_error) :-
 	).
 
 test(search_title) :-
-	get_key(Key),
+	current_prolog_flag(omdbi_api_key, Key),
 	aggregate_all(
 		count,
 		omdb_search_results(
 			Key,
 			'Title'=_Value,
-			[title="The Road to Casino Royale"],
+			[title='The Road to Casino Royale'],
 			_NumResults
 		),
 		1
