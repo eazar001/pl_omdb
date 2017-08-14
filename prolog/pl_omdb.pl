@@ -16,7 +16,7 @@
 :- use_module(library(http/json)).
 :- use_module(omdb_query).
 
-:- create_prolog_flag(omdb_api_key, '', [type(atom)]).
+:- create_prolog_flag(omdb_api_key, '', [type(atom), keep(true)]).
 
 /** <module> pl_omdb API
 This module implements a convenience layer over the OMDB API located at:
